@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { PLAN_SUMMARY } from '../../data/mockMealPlan';
 import { useMealPlan } from '../../state/MealPlanContext';
 import { usePreferences } from '../../state/PreferencesContext';
-import { colors } from '../../theme';
+import { colors, layout } from '../../theme';
 
 export function PlanHeaderBanner() {
   const { prefs } = usePreferences();
@@ -41,7 +41,10 @@ export function PlanHeaderBanner() {
 
 const styles = StyleSheet.create({
   banner: {
+    alignSelf: 'center',
     backgroundColor: colors.deepGreen,
+    width: '100%',
+    maxWidth: layout.figmaFrameWidth,
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 16,

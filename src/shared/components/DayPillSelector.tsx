@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import { colors } from '../../theme';
+import { colors, layout } from '../../theme';
 
 const DAY_LABELS = ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'];
 
@@ -15,6 +15,7 @@ export function DayPillSelector({ activeIndex, onSelect }: Props) {
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
+      style={styles.scroll}
     >
       {DAY_LABELS.map((day, i) => (
         <TouchableOpacity
@@ -33,6 +34,11 @@ export function DayPillSelector({ activeIndex, onSelect }: Props) {
 }
 
 const styles = StyleSheet.create({
+  scroll: {
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: layout.figmaFrameWidth,
+  },
   container: {
     flexDirection: 'row',
     paddingHorizontal: 16,

@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { useNavigator } from '../../core/useNavigator';
 import type { ScreenKey } from '../../features/prototype/screens';
-import { colors } from '../../theme';
+import { colors, layout } from '../../theme';
 
 type Tab = 'home' | 'preferences' | 'meals';
 
@@ -81,8 +81,9 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     bottom: 0,
-    left: 0,
-    right: 0,
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: layout.figmaFrameWidth,
     height: 60,
     flexDirection: 'row',
     backgroundColor: colors.white,

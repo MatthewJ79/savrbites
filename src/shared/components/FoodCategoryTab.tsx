@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 
 import { INGREDIENT_CATEGORIES } from '../../data/ingredients';
 import type { TasteCategory } from '../../data/types';
-import { colors } from '../../theme';
+import { colors, layout } from '../../theme';
 
 type Props = {
   tabs: TasteCategory[];
@@ -45,9 +45,12 @@ export function FoodCategoryTab({ tabs, activeKey, onSelect }: Props) {
 
 const styles = StyleSheet.create({
   scroll: {
+    alignSelf: 'center',
     backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderBottomColor: '#E3E3E3',
+    width: '100%',
+    maxWidth: layout.figmaFrameWidth,
   },
   container: {
     flexDirection: 'row',

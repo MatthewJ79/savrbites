@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { colors } from '../../theme';
+import { colors, layout } from '../../theme';
 
 type Tab = 'meals' | 'recipes' | 'shopping';
 
@@ -45,7 +45,10 @@ export function ContentTabBar({ activeTab, onSelect }: Props) {
 
 const styles = StyleSheet.create({
   container: {
+    alignSelf: 'center',
     flexDirection: 'row',
+    width: '100%',
+    maxWidth: layout.figmaFrameWidth,
     borderBottomWidth: 1,
     borderBottomColor: '#E3E3E3',
     backgroundColor: colors.white,
