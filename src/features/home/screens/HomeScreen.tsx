@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { useNavigator } from '../../../core/useNavigator';
 import { BottomNavBar } from '../../../shared/components/BottomNavBar';
@@ -36,9 +36,6 @@ export function HomeScreen() {
     try {
       const result = await generateMealPlan(prefs);
       setPlan(result.plan, result.source);
-      if (result.source === 'mock') {
-        Alert.alert('Using Sample Plan', 'AI was unavailable, so SavrBites is showing a sample meal plan. Connect a backend meal-plan API when the design is approved.');
-      }
       navigate('mealsMonday');
     } finally {
       setLoading(false);
