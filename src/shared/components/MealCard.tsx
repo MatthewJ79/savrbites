@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import type { ViewStyle } from 'react-native';
 
+import { MEAL_IMAGES } from '../../data/mealImages';
 import type { Meal } from '../../data/types';
 import { colors } from '../../theme';
 
@@ -18,10 +19,13 @@ const TYPE_COLORS: Record<string, string> = {
 
 export function MealCard({ meal, style }: Props) {
   const thumbColor = TYPE_COLORS[meal.type] ?? colors.brandGreen;
+  const thumbImage = MEAL_IMAGES[meal.type];
 
   return (
     <View style={[styles.card, style]}>
-      <View style={[styles.thumb, { backgroundColor: thumbColor }]} />
+      <View style={[styles.thumb, { backgroundColor: thumbColor }]}>
+        {thumbImage && <Image resizeMode="cover" source={thumbImage} style={styles.thumbImage} />}
+      </View>
       <View style={styles.content}>
         <View style={styles.metaRow}>
           <Text style={styles.type}>{meal.type.charAt(0).toUpperCase() + meal.type.slice(1)}</Text>
@@ -55,6 +59,11 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 8,
     flexShrink: 0,
+    overflow: 'hidden',
+  },
+  thumbImage: {
+    width: '100%',
+    height: '100%',
   },
   content: {
     flex: 1,
