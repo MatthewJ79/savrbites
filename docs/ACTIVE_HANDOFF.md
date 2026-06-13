@@ -19,6 +19,10 @@ Latest Codex Checkpoints
 - `c5cbe3b` Use Figma meal thumbnails in meal cards
 - `ddfddec` Use Figma images on allergy and cuisine cards
 - `3c26cbd` Polish ingredient preference rows
+- `7b92ccb` Fix web phone preview framing
+- `0546371` Match auth button styling to Figma
+- `1d348b4` Add web QA screen links and fix home logo
+- `d09721d` Polish taste preference rows
 
 Verified Gates
 --------------
@@ -26,6 +30,8 @@ Verified Gates
 - `npx.cmd expo export --platform web`
 - Fresh Expo web server on port 8103 returned HTML 200 and bundle 200 during
   Chrome screenshot QA.
+- A later fresh Expo web server on port 8104 was used for direct screen QA with
+  `?screen=home` and `?screen=beefHome`.
 
 Known QA Findings
 -----------------
@@ -34,6 +40,9 @@ Known QA Findings
   fully visible in the phone-width screenshot.
 - The next QA pass should inspect every screen at phone and tablet widths for
   exact Figma spacing, especially preference lists and meal-plan scrolling.
+- Web-only QA shortcuts are available with `?screen=<screenKey>`, for example
+  `http://127.0.0.1:8104/?screen=home` and
+  `http://127.0.0.1:8104/?screen=beefHome`.
 
 Important Safety Notes
 ----------------------
