@@ -19,10 +19,10 @@ const COOKING_STYLES = ['Chef Inspired', 'Quick Fix', 'Comfort Food', 'On the go
 const SKILL_LEVELS = ['Chef', 'Home Expert', 'Intermediate', 'Follow Recipe', 'Beginner'];
 
 const PREF_CARDS = [
-  { title: 'Tastes', subtitle: 'What are your favorite ingredients?', color: '#C58A68', buttonLabel: 'Select Tastes', screen: 'beefHome' as const },
-  { title: 'Allergies', subtitle: 'Do you have any food allergies?', color: '#E8C8C8', buttonLabel: 'Set Allergies', screen: 'allergiesHome' as const },
-  { title: 'Cuisines', subtitle: 'What are your favorite cuisines?', color: '#C8A882', buttonLabel: 'Select Cuisines', screen: 'cuisinesHome' as const },
-  { title: 'Nutrition', subtitle: 'What is your nutrition plan?', color: '#A3BD9C', buttonLabel: 'Set Nutrition', screen: 'nutritionHome' as const },
+  { title: 'Tastes', subtitle: 'What are your favorite ingredients?', color: '#C58A68', image: require('../../../../assets/home-cards/tastes.png'), buttonLabel: 'Select Tastes', screen: 'beefHome' as const },
+  { title: 'Allergies', subtitle: 'Do you have any food allergies?', color: '#E8C8C8', image: require('../../../../assets/home-cards/allergies.png'), buttonLabel: 'Set Allergies', screen: 'allergiesHome' as const },
+  { title: 'Cuisines', subtitle: 'What are your favorite cuisines?', color: '#C8A882', image: require('../../../../assets/home-cards/cuisines.png'), buttonLabel: 'Select Cuisines', screen: 'cuisinesHome' as const },
+  { title: 'Nutrition', subtitle: 'What is your nutrition plan?', color: '#A3BD9C', image: require('../../../../assets/home-cards/nutrition.png'), buttonLabel: 'Set Nutrition', screen: 'nutritionHome' as const },
 ];
 
 export function HomeScreen() {
@@ -57,6 +57,7 @@ export function HomeScreen() {
             title={card.title}
             subtitle={card.subtitle}
             color={card.color}
+            image={card.image}
             buttonLabel={card.buttonLabel}
             onPress={() => navigate(card.screen)}
           />

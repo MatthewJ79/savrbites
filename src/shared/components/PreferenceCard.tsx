@@ -1,4 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import type { ImageSourcePropType } from 'react-native';
 
 import { colors, typography } from '../../theme';
 
@@ -6,14 +7,17 @@ type Props = {
   title: string;
   subtitle: string;
   color: string;
+  image?: ImageSourcePropType;
   buttonLabel: string;
   onPress: () => void;
 };
 
-export function PreferenceCard({ title, subtitle, color, buttonLabel, onPress }: Props) {
+export function PreferenceCard({ title, subtitle, color, image, buttonLabel, onPress }: Props) {
   return (
     <View style={styles.card}>
-      <View style={[styles.thumb, { backgroundColor: color }]} />
+      <View style={[styles.thumb, { backgroundColor: color }]}>
+        {image && <Image resizeMode="cover" source={image} style={styles.thumbImage} />}
+      </View>
       <View style={styles.textBlock}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subtitle} numberOfLines={2}>{subtitle}</Text>
@@ -44,6 +48,11 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 10,
     flexShrink: 0,
+    overflow: 'hidden',
+  },
+  thumbImage: {
+    width: '100%',
+    height: '100%',
   },
   textBlock: {
     flex: 1,
