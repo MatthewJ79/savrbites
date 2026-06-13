@@ -1,6 +1,7 @@
 export const colors = {
   linen: '#E3E3E3',
   brandGreen: '#A3BD9C',
+  authButtonGray: '#8D8D8D',
   deepGreen: '#184614',
   black: '#000000',
   white: '#FFFFFF',
