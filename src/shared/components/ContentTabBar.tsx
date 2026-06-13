@@ -9,12 +9,10 @@ type Props = {
   onSelect: (t: Tab) => void;
 };
 
-type TabDef = { key: Tab; label: string; icon: string };
-
-const TABS: TabDef[] = [
-  { key: 'meals', label: 'Meals', icon: '⬤' },
-  { key: 'recipes', label: 'Recipe', icon: '≡' },
-  { key: 'shopping', label: 'Shopping', icon: '◻' },
+const TABS: Array<{ key: Tab; label: string }> = [
+  { key: 'meals', label: 'Meals' },
+  { key: 'recipes', label: 'Recipe' },
+  { key: 'shopping', label: 'Shopping' },
 ];
 
 export function ContentTabBar({ activeTab, onSelect }: Props) {
@@ -29,9 +27,7 @@ export function ContentTabBar({ activeTab, onSelect }: Props) {
             onPress={() => onSelect(tab.key)}
             style={styles.tab}
           >
-            <Text style={[styles.icon, active && styles.iconActive]}>
-              {tab.icon}
-            </Text>
+            <TabIcon tab={tab.key} active={active} />
             <Text style={[styles.label, active && styles.labelActive]}>
               {tab.label}
             </Text>
@@ -39,6 +35,35 @@ export function ContentTabBar({ activeTab, onSelect }: Props) {
           </TouchableOpacity>
         );
       })}
+    </View>
+  );
+}
+
+function TabIcon({ tab, active }: { tab: Tab; active: boolean }) {
+  const color = active ? colors.deepGreen : colors.mutedText;
+
+  if (tab === 'recipes') {
+    return (
+      <View style={[styles.documentIcon, { borderColor: color }]}>
+        <View style={[styles.docLine, { backgroundColor: color }]} />
+        <View style={[styles.docLine, { backgroundColor: color }]} />
+      </View>
+    );
+  }
+
+  if (tab === 'shopping') {
+    return (
+      <View style={[styles.bagIcon, { borderColor: color }]}>
+        <View style={[styles.bagHandle, { borderColor: color }]} />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.mealIcon}>
+      <View style={[styles.forkLine, { backgroundColor: color }]} />
+      <View style={[styles.plate, { borderColor: color }]} />
+      <View style={[styles.knifeLine, { backgroundColor: color }]} />
     </View>
   );
 }
@@ -58,14 +83,65 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     position: 'relative',
-    gap: 2,
+    gap: 3,
   },
-  icon: {
-    fontSize: 14,
-    color: colors.mutedText,
+  mealIcon: {
+    width: 22,
+    height: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  iconActive: {
-    color: colors.deepGreen,
+  forkLine: {
+    position: 'absolute',
+    left: 1,
+    width: 2,
+    height: 14,
+    borderRadius: 1,
+  },
+  plate: {
+    width: 14,
+    height: 10,
+    borderRadius: 7,
+    borderWidth: 1.5,
+  },
+  knifeLine: {
+    position: 'absolute',
+    right: 1,
+    width: 2,
+    height: 14,
+    borderRadius: 1,
+  },
+  documentIcon: {
+    width: 14,
+    height: 16,
+    borderRadius: 2,
+    borderWidth: 1.5,
+    paddingHorizontal: 2,
+    paddingTop: 4,
+    gap: 3,
+  },
+  docLine: {
+    height: 1.5,
+    borderRadius: 1,
+  },
+  bagIcon: {
+    width: 15,
+    height: 14,
+    borderRadius: 2,
+    borderWidth: 1.5,
+    marginTop: 2,
+  },
+  bagHandle: {
+    position: 'absolute',
+    top: -5,
+    left: 3,
+    width: 7,
+    height: 7,
+    borderTopWidth: 1.5,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
   },
   label: {
     fontFamily: 'serif',
