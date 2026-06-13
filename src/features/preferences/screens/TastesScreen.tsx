@@ -8,6 +8,7 @@ import { BottomNavBar } from '../../../shared/components/BottomNavBar';
 import { FoodCategoryTab } from '../../../shared/components/FoodCategoryTab';
 import { InlineTextField } from '../../../shared/components/InlineTextField';
 import { RatingRow } from '../../../shared/components/RatingRow';
+import { ScreenFrame } from '../../../shared/components/ScreenFrame';
 import { usePreferences } from '../../../state/PreferencesContext';
 import { colors } from '../../../theme';
 
@@ -33,7 +34,7 @@ export function TastesScreen({ category }: Props) {
   };
 
   return (
-    <View style={styles.screen}>
+    <ScreenFrame>
       <FoodCategoryTab
         tabs={tabs}
         activeKey={category}
@@ -86,12 +87,11 @@ export function TastesScreen({ category }: Props) {
       </ScrollView>
 
       <BottomNavBar activeTab="preferences" />
-    </View>
+    </ScreenFrame>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.linen },
   content: { paddingBottom: 112 },
   otherInputs: { paddingHorizontal: 16, paddingTop: 16, gap: 8 },
   inputRow: { flexDirection: 'row', alignItems: 'center', gap: 8, height: 54 },

@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { useNavigator } from '../../../core/useNavigator';
 import { BottomNavBar } from '../../../shared/components/BottomNavBar';
@@ -6,6 +6,7 @@ import { ContentTabBar } from '../../../shared/components/ContentTabBar';
 import { DayPillSelector } from '../../../shared/components/DayPillSelector';
 import { MealCard } from '../../../shared/components/MealCard';
 import { PlanHeaderBanner } from '../../../shared/components/PlanHeaderBanner';
+import { ScreenFrame } from '../../../shared/components/ScreenFrame';
 import { useMealPlan } from '../../../state/MealPlanContext';
 import { colors } from '../../../theme';
 import type { ScreenKey } from '../../../features/prototype/screens';
@@ -33,7 +34,7 @@ export function MealPlanScreen({ day, tab }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <ScreenFrame>
       <TouchableOpacity onPress={() => navigate('home')} style={styles.editBar} activeOpacity={0.75}>
         <Text style={styles.editLink}>{'← Edit Preferences'}</Text>
       </TouchableOpacity>
@@ -74,12 +75,11 @@ export function MealPlanScreen({ day, tab }: Props) {
       </ScrollView>
 
       <BottomNavBar activeTab="meals" />
-    </SafeAreaView>
+    </ScreenFrame>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.linen },
   editBar: {
     backgroundColor: colors.deepGreen,
     paddingHorizontal: 16,

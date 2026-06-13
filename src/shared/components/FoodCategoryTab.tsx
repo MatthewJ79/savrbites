@@ -1,5 +1,6 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { CATEGORY_TAB_IMAGES } from '../../data/categoryTabImages';
 import { INGREDIENT_CATEGORIES } from '../../data/ingredients';
 import type { TasteCategory } from '../../data/types';
 import { colors, layout } from '../../theme';
@@ -21,6 +22,7 @@ export function FoodCategoryTab({ tabs, activeKey, onSelect }: Props) {
       {tabs.map((key) => {
         const meta = INGREDIENT_CATEGORIES[key];
         const active = key === activeKey;
+        const image = CATEGORY_TAB_IMAGES[key];
         return (
           <TouchableOpacity
             key={key}
@@ -29,9 +31,13 @@ export function FoodCategoryTab({ tabs, activeKey, onSelect }: Props) {
             style={styles.tab}
           >
             <View style={[styles.circle, active && styles.circleActive]}>
-              <Text style={styles.circleText}>
-                {meta.label.charAt(0).toUpperCase()}
-              </Text>
+              {image ? (
+                <Image resizeMode="contain" source={image} style={styles.image} />
+              ) : (
+                <Text style={styles.circleText}>
+                  {meta.label.charAt(0).toUpperCase()}
+                </Text>
+              )}
             </View>
             <Text style={[styles.label, active && styles.labelActive]} numberOfLines={1}>
               {meta.label}
@@ -64,17 +70,26 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   circle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.linen,
+    width: 66,
+    height: 66,
+    borderRadius: 33,
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: colors.black,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.12,
+    shadowRadius: 3,
+    elevation: 2,
   },
   circleActive: {
     borderWidth: 3,
-    borderColor: colors.deepGreen,
-    backgroundColor: colors.brandGreen,
+    borderColor: '#E5E5E5',
+    backgroundColor: colors.white,
+  },
+  image: {
+    width: 60,
+    height: 50,
   },
   circleText: {
     fontFamily: 'serif',

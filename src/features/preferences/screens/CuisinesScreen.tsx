@@ -6,6 +6,7 @@ import { CUISINE_ITEMS } from '../../../data/cuisines';
 import { BottomNavBar } from '../../../shared/components/BottomNavBar';
 import { CuisineCard } from '../../../shared/components/CuisineCard';
 import { InlineTextField } from '../../../shared/components/InlineTextField';
+import { ScreenFrame } from '../../../shared/components/ScreenFrame';
 import { usePreferences } from '../../../state/PreferencesContext';
 import { colors } from '../../../theme';
 
@@ -17,7 +18,7 @@ export function CuisinesScreen() {
   const cardSize = (frameWidth - 24) / 2;
 
   return (
-    <View style={styles.screen}>
+    <ScreenFrame>
       <ScrollView
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
@@ -63,12 +64,11 @@ export function CuisinesScreen() {
 
       </ScrollView>
       <BottomNavBar activeTab="preferences" />
-    </View>
+    </ScreenFrame>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.linen },
   content: { paddingBottom: 112 },
   title: {
     fontFamily: 'serif',

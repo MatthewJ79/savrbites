@@ -6,6 +6,7 @@ import { ALLERGY_ITEMS } from '../../../data/allergies';
 import { AllergyCard } from '../../../shared/components/AllergyCard';
 import { BottomNavBar } from '../../../shared/components/BottomNavBar';
 import { InlineTextField } from '../../../shared/components/InlineTextField';
+import { ScreenFrame } from '../../../shared/components/ScreenFrame';
 import { colors } from '../../../theme';
 import { usePreferences } from '../../../state/PreferencesContext';
 
@@ -17,7 +18,7 @@ export function AllergiesScreen() {
   const cardSize = (frameWidth - 24) / 2;
 
   return (
-    <View style={styles.screen}>
+    <ScreenFrame>
       <ScrollView
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
@@ -63,12 +64,11 @@ export function AllergiesScreen() {
 
       </ScrollView>
       <BottomNavBar activeTab="preferences" />
-    </View>
+    </ScreenFrame>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.linen },
   content: { paddingBottom: 112 },
   title: {
     fontFamily: 'serif',

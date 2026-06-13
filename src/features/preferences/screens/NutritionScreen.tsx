@@ -4,6 +4,7 @@ import { useNavigator } from '../../../core/useNavigator';
 import { NUTRITION_PLANS } from '../../../data/nutrition';
 import { BottomNavBar } from '../../../shared/components/BottomNavBar';
 import { InlineTextField } from '../../../shared/components/InlineTextField';
+import { ScreenFrame } from '../../../shared/components/ScreenFrame';
 import { usePreferences } from '../../../state/PreferencesContext';
 import { colors } from '../../../theme';
 
@@ -12,7 +13,7 @@ export function NutritionScreen() {
   const { prefs, setNutritionPlan } = usePreferences();
 
   return (
-    <View style={styles.screen}>
+    <ScreenFrame>
       <ScrollView
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
@@ -64,12 +65,11 @@ export function NutritionScreen() {
 
       </ScrollView>
       <BottomNavBar activeTab="preferences" />
-    </View>
+    </ScreenFrame>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.linen },
   content: { paddingBottom: 112 },
   title: {
     fontFamily: 'serif',

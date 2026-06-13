@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { useNavigator } from '../../../core/useNavigator';
 import { BottomNavBar } from '../../../shared/components/BottomNavBar';
@@ -8,12 +8,12 @@ import { LoadingOverlay } from '../../../shared/components/LoadingOverlay';
 import { NumberInput } from '../../../shared/components/NumberInput';
 import { PreferenceCard } from '../../../shared/components/PreferenceCard';
 import { SavrBitesLogo } from '../../../shared/components/SavrBitesLogo';
+import { ScreenFrame } from '../../../shared/components/ScreenFrame';
 import { ToggleSwitch } from '../../../shared/components/ToggleSwitch';
 import { generateMealPlan } from '../../../services/mealPlanApi';
 import { useMealPlan } from '../../../state/MealPlanContext';
 import { usePreferences } from '../../../state/PreferencesContext';
 import { colors, typography } from '../../../theme';
-import { TouchableOpacity } from 'react-native';
 
 const COOKING_STYLES = ['Chef Inspired', 'Quick Fix', 'Comfort Food', 'On the go', 'Just a Snack'];
 const SKILL_LEVELS = ['Chef', 'Home Expert', 'Intermediate', 'Follow Recipe', 'Beginner'];
@@ -46,7 +46,7 @@ export function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <ScreenFrame>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.logoWrap}>
           <SavrBitesLogo />
@@ -110,12 +110,11 @@ export function HomeScreen() {
 
       {loading && <LoadingOverlay />}
       <BottomNavBar activeTab="home" />
-    </SafeAreaView>
+    </ScreenFrame>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.linen },
   content: { paddingBottom: 20 },
   logoWrap: {
     height: 200,

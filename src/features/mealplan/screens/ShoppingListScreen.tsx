@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { useNavigator } from '../../../core/useNavigator';
 import { buildShoppingList } from '../../../data/buildShoppingList';
 import { ContentTabBar } from '../../../shared/components/ContentTabBar';
 import { BottomNavBar } from '../../../shared/components/BottomNavBar';
 import { PlanHeaderBanner } from '../../../shared/components/PlanHeaderBanner';
+import { ScreenFrame } from '../../../shared/components/ScreenFrame';
 import { useMealPlan } from '../../../state/MealPlanContext';
 import { colors } from '../../../theme';
 
@@ -22,7 +23,7 @@ export function ShoppingListScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <ScreenFrame>
       <PlanHeaderBanner />
       <ContentTabBar
         activeTab="shopping"
@@ -63,12 +64,11 @@ export function ShoppingListScreen() {
       />
 
       <BottomNavBar activeTab="meals" />
-    </SafeAreaView>
+    </ScreenFrame>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.linen },
   content: { paddingBottom: 20 },
   section: { paddingTop: 8 },
   sectionHeader: {
