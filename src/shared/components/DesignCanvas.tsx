@@ -1,24 +1,38 @@
 import type { PropsWithChildren } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { colors, layout } from '../../theme';
 import { useDeviceClass } from '../hooks/useDeviceClass';
 
 export function DesignCanvas({ children }: PropsWithChildren) {
-  const { isTablet } = useDeviceClass();
+  const { width, isTablet } = useDeviceClass();
+  const Root = Platform.OS === 'web' ? View : SafeAreaView;
+  const previewWidth = Platform.OS === 'web' ? 390 : width;
+  const phoneScale = Math.min(1, previewWidth / layout.figmaFrameWidth);
+  const scale = Platform.OS === 'web' ? phoneScale : isTablet ? 1 : phoneScale;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <Root style={styles.safeArea}>
       <ScrollView
         bounces={false}
         contentContainerStyle={[styles.page, isTablet && styles.tabletPage]}
       >
-        <View style={[styles.frame, isTablet && styles.tabletFrame]}>
-          <View style={styles.texture} />
-          {children}
+        <View
+          style={[
+            styles.scaledSlot,
+            {
+              width: layout.figmaFrameWidth * scale,
+              minHeight: layout.figmaFrameHeight * scale,
+            },
+          ]}
+        >
+          <View style={[styles.frame, isTablet && styles.tabletFrame, { transform: [{ scale }] }]}>
+            <View style={styles.texture} />
+            {children}
+          </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Root>
   );
 }
 
@@ -36,12 +50,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: layout.tabletPreviewPadding,
   },
+  scaledSlot: {
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
   frame: {
-    width: '100%',
-    maxWidth: layout.figmaFrameWidth,
+    width: layout.figmaFrameWidth,
     minHeight: layout.figmaFrameHeight,
     overflow: 'hidden',
     backgroundColor: colors.linen,
+    transformOrigin: 'top center',
   },
   tabletFrame: {
     borderWidth: 1,
