@@ -19,7 +19,7 @@ const BUTTONS: BtnDef[] = [
   { key: 'dislike', symbol: '👎' },
 ];
 
-export function RatingRow({ label, value, onChange, fontSize = 18 }: Props) {
+export function RatingRow({ label, value, onChange, fontSize = 20 }: Props) {
   const handlePress = (key: Exclude<Rating, null>) => {
     onChange(value === key ? null : key);
   };
@@ -38,7 +38,7 @@ export function RatingRow({ label, value, onChange, fontSize = 18 }: Props) {
               accessibilityLabel={`${label} ${btn.key} preference`}
               accessibilityRole="button"
               accessibilityState={{ selected }}
-              activeOpacity={0.7}
+              activeOpacity={0.72}
               key={btn.key}
               onPress={() => handlePress(btn.key)}
               style={[styles.btn, selected && styles.btnActive]}
@@ -58,25 +58,25 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E8E8E8',
-    minHeight: 58,
+    paddingLeft: 18,
+    paddingRight: 12,
+    minHeight: 64,
   },
   label: {
     flex: 1,
     fontFamily: 'serif',
     color: colors.black,
+    letterSpacing: 0,
   },
   buttons: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 4,
   },
   btn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 39,
+    height: 39,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
     borderColor: colors.deepGreen,
   },
   emoji: {
-    fontSize: 23,
+    fontSize: 24,
+    lineHeight: 28,
   },
   idkText: {
     fontFamily: 'serif',

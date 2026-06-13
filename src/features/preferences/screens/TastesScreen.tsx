@@ -92,7 +92,7 @@ export function TastesScreen({ category }: Props) {
 }
 
 const styles = StyleSheet.create({
-  content: { paddingBottom: 112 },
+  content: { paddingTop: 10, paddingBottom: 112 },
   otherInputs: { paddingHorizontal: 16, paddingTop: 16, gap: 8 },
   inputRow: { flexDirection: 'row', alignItems: 'center', gap: 8, height: 54 },
   otherLabel: {
