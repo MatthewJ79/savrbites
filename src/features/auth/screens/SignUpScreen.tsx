@@ -1,4 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import { useNavigator } from '../../../core/useNavigator';
 import { BottomNavBar } from '../../../shared/components/BottomNavBar';
@@ -10,6 +11,9 @@ import { colors, typography } from '../../../theme';
 
 export function SignUpScreen() {
   const { navigate } = useNavigator();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   return (
     <DesignCanvas>
@@ -23,9 +27,29 @@ export function SignUpScreen() {
 
       <SavrBitesLogo />
 
-      <FigmaTextField label="Enter Username" placeholder="write here" top={313} />
-      <FigmaTextField label="Enter Password" placeholder="write here" secureTextEntry top={422} />
-      <FigmaTextField label="Confirm Password" placeholder="write here" secureTextEntry top={531} />
+      <FigmaTextField
+        label="Enter Username"
+        onChangeText={setUsername}
+        placeholder="write here"
+        top={313}
+        value={username}
+      />
+      <FigmaTextField
+        label="Enter Password"
+        onChangeText={setPassword}
+        placeholder="write here"
+        secureTextEntry
+        top={422}
+        value={password}
+      />
+      <FigmaTextField
+        label="Confirm Password"
+        onChangeText={setConfirmPassword}
+        placeholder="write here"
+        secureTextEntry
+        top={531}
+        value={confirmPassword}
+      />
 
       <FigmaPrimaryButton left={119} top={652} onPress={() => navigate('home')}>
         Sign up

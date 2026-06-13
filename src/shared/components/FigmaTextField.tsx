@@ -5,6 +5,8 @@ import { colors, typography } from '../../theme';
 type FigmaTextFieldProps = {
   label: string;
   placeholder: string;
+  value?: string;
+  onChangeText?: (text: string) => void;
   secureTextEntry?: boolean;
   top: number;
 };
@@ -12,6 +14,8 @@ type FigmaTextFieldProps = {
 export function FigmaTextField({
   label,
   placeholder,
+  value,
+  onChangeText,
   secureTextEntry,
   top,
 }: FigmaTextFieldProps) {
@@ -20,10 +24,12 @@ export function FigmaTextField({
       <Text style={styles.label}>{label}</Text>
       <TextInput
         autoCapitalize="none"
+        onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={colors.mutedText}
         secureTextEntry={secureTextEntry}
         style={styles.input}
+        value={value}
       />
     </View>
   );

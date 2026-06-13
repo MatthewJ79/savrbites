@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import { useNavigator } from '../../../core/useNavigator';
@@ -11,13 +12,28 @@ import { colors, typography } from '../../../theme';
 // Figma source: "sign in", node 574:9501, frame 440 x 956.
 export function SignInScreen() {
   const { navigate } = useNavigator();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <DesignCanvas>
       <SavrBitesLogo />
 
-      <FigmaTextField label="Username" placeholder="write here" top={313} />
-      <FigmaTextField label="Password" placeholder="write here" secureTextEntry top={422} />
+      <FigmaTextField
+        label="Username"
+        onChangeText={setUsername}
+        placeholder="write here"
+        top={313}
+        value={username}
+      />
+      <FigmaTextField
+        label="Password"
+        onChangeText={setPassword}
+        placeholder="write here"
+        secureTextEntry
+        top={422}
+        value={password}
+      />
 
       <FigmaPrimaryButton left={119} top={552} onPress={() => navigate('home')}>
         Sign In
