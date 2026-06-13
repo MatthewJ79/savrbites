@@ -42,6 +42,7 @@ export function TastesScreen({ category }: Props) {
       />
 
       <ScrollView
+        style={styles.scrollArea}
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -92,6 +93,7 @@ export function TastesScreen({ category }: Props) {
 }
 
 const styles = StyleSheet.create({
+  scrollArea: { backgroundColor: colors.white },
   content: { paddingTop: 10, paddingBottom: 112 },
   otherInputs: { paddingHorizontal: 16, paddingTop: 16, gap: 8 },
   inputRow: { flexDirection: 'row', alignItems: 'center', gap: 8, height: 54 },

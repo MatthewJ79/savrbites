@@ -13,13 +13,13 @@ type Props = {
 type BtnDef = { key: Exclude<Rating, null>; symbol: string };
 
 const BUTTONS: BtnDef[] = [
-  { key: 'love', symbol: '❤' },
-  { key: 'like', symbol: '👍' },
+  { key: 'love', symbol: '\u2764' },
+  { key: 'like', symbol: '\u{1F44D}' },
   { key: 'idk', symbol: 'IDK' },
-  { key: 'dislike', symbol: '👎' },
+  { key: 'dislike', symbol: '\u{1F44E}' },
 ];
 
-export function RatingRow({ label, value, onChange, fontSize = 20 }: Props) {
+export function RatingRow({ label, value, onChange, fontSize = 28 }: Props) {
   const handlePress = (key: Exclude<Rating, null>) => {
     onChange(value === key ? null : key);
   };
@@ -43,7 +43,12 @@ export function RatingRow({ label, value, onChange, fontSize = 20 }: Props) {
               onPress={() => handlePress(btn.key)}
               style={[styles.btn, selected && styles.btnActive]}
             >
-              <Text style={btn.key === 'idk' ? styles.idkText : styles.emoji}>
+              <Text
+                style={[
+                  btn.key === 'idk' ? styles.idkText : styles.emoji,
+                  btn.key === 'love' && styles.heartIcon,
+                ]}
+              >
                 {btn.symbol}
               </Text>
             </TouchableOpacity>
@@ -60,7 +65,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 18,
     paddingRight: 12,
-    minHeight: 64,
+    minHeight: 72,
   },
   label: {
     flex: 1,
@@ -74,8 +79,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   btn: {
-    width: 39,
-    height: 39,
+    width: 40,
+    height: 40,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -87,12 +92,15 @@ const styles = StyleSheet.create({
     borderColor: colors.deepGreen,
   },
   emoji: {
-    fontSize: 24,
-    lineHeight: 28,
+    fontSize: 27,
+    lineHeight: 31,
+  },
+  heartIcon: {
+    color: '#EF4F4F',
   },
   idkText: {
     fontFamily: 'serif',
-    fontSize: 14,
+    fontSize: 16,
     color: colors.black,
     fontStyle: 'italic',
     fontWeight: '700',
