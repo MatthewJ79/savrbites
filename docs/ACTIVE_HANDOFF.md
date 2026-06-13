@@ -15,6 +15,9 @@ Latest Codex Checkpoints
 - `c47473d` Draw meal plan tab icons natively
 - `02970ac` Polish shopping list native controls
 - `ec8d8aa` Smooth meal plan preview flow
+- `b8a5e55` Use Figma images on home preference cards
+- `c5cbe3b` Use Figma meal thumbnails in meal cards
+- `ddfddec` Use Figma images on allergy and cuisine cards
 
 Verified Gates
 --------------
@@ -31,7 +34,7 @@ Important Safety Notes
 Next Best Tasks
 ---------------
 1. Visual QA every native screen in Chrome at 390px wide and tablet width.
-2. Replace remaining placeholder thumbnails on Home, MealCard, AllergyCard, and CuisineCard with approved assets or cropped Figma-derived references.
-3. Improve the long ingredient lists for exact Figma spacing and type scale after visual QA.
-4. Add backend meal-plan API contract docs before wiring real AI generation.
+2. Improve the long ingredient lists for exact Figma spacing and type scale after visual QA.
+3. Add backend meal-plan API contract docs before wiring real AI generation.
+4. Replace any remaining color-only placeholders when approved source art exists.
 5. Re-test Expo Go/iPhone after the visual pass.
