@@ -1,0 +1,505 @@
+SAVRBITES BUILD PLAN
+====================
+Goal: replace the image-based clickable prototype with real React Native screens
+that use mock (hardcoded) data. By end of this plan, a user can sign in, set
+preferences, and see a full 7-day mock meal plan with recipes and shopping list.
+
+Codex should work through each PHASE in order. Each phase is a self-contained
+unit that can be committed before moving on. Read this file before touching any
+code. Read FIGMA_RULES.md before building any UI. Read AGENTS.md always.
+
+
+===========================================
+CURRENT STATE (do not rebuild what exists)
+===========================================
+
+WORKING:
+  src/features/prototype/PrototypeApp.tsx
+    - Image-based screen router. Shows PNG screenshots from assets/prototype/.
+    - Invisible hotspot overlays handle all navigation.
+    - ALL screens are already reachable via taps. This is the live prototype.
+
+  src/shared/components/DesignCanvas.tsx
+    - SafeAreaView + ScrollView wrapper. 440px max-width frame. Tablet-aware.
+
+  src/shared/components/FigmaTextField.tsx    -- text input
+  src/shared/components/FigmaPrimaryButton.tsx -- green pill button
+  src/shared/components/SavrBitesLogo.tsx     -- logo with steak plate
+  src/shared/components/BottomNavBar.tsx      -- three placeholder dots (needs real icons)
+
+  src/theme/colors.ts   -- brandGreen, deepGreen, linen, black, white, mutedText
+  src/theme/typography.ts
+  src/theme/layout.ts
+
+  src/features/auth/screens/SignInScreen.tsx
+    - Native sign-in/sign-up screen. NOT connected to AppRoot (prototype overrides it).
+
+  src/features/prototype/screens.ts   -- all ScreenKey types + image requires
+  src/features/prototype/hotspots.ts  -- all tap regions per screen
+
+INSTALLED PACKAGES (no router library):
+  expo ~55.0.0, react 19, react-native 0.83, react-native-web
+
+DO NOT install Expo Router or React Navigation — use a custom navigator pattern
+that already exists in PrototypeApp. Extend it, do not replace it.
+
+
+===========================================
+PHASE 1 — SIMPLE SCREEN ROUTER
+===========================================
+Purpose: wire together a lightweight navigator that can render either an image
+screen (existing prototype) or a real React Native screen component.
+
+File to create: src/core/Navigator.tsx
+
+  - Export type AppScreen = ScreenKey (import from prototype/screens.ts)
+  - Export a React context: NavigatorContext with
+      { screen: AppScreen; navigate: (s: AppScreen) => void }
+  - Export function Navigator() — wraps everything in NavigatorContext.Provider
+    - Keeps state: [screen, setScreen] starting at 'signIn'
+    - Renders the active screen using a renderScreen() switch (see below)
+
+  renderScreen(screen) switch:
+    'signIn'      -> <SignInScreen />       (already exists, just connect it)
+    'signup'      -> <SignUpScreen />       (new, see Phase 3)
+    'home'        -> <HomeScreen />         (new, see Phase 3)
+    'mealsMonday' through 'mealsSunday'  -> <MealPlanScreen day={0..6} tab="meals" />
+    'recipesMonday' through 'recipesSunday' -> <MealPlanScreen day={0..6} tab="recipes" />
+    'shoppingList'  -> <ShoppingListScreen />
+    'allergiesHome' -> <AllergiesScreen />
+    'cuisinesHome'  -> <CuisinesScreen />
+    'nutritionHome' -> <NutritionScreen />
+    'beefHome' | 'poultryHome' | 'porkHome' | 'lambHome' |
+    'beansHome' | 'dairyHome' | 'seafoodHome' | 'grainsHome' |
+    'exoticHome' | 'fruitHome' | 'oilsHome' | 'nutsHome' |
+    'saucesHome' | 'spicesHome' | 'veggiesHome'
+                    -> <TastesScreen category={screen} />
+    default         -> fall back to PrototypeApp image screen for that key
+
+File to modify: src/core/AppRoot.tsx
+  - Replace <PrototypeApp /> with <Navigator />
+  - Import Navigator from ./Navigator
+
+File to modify: src/features/auth/screens/SignInScreen.tsx
+  - Replace internal mode state with useNavigator() from NavigatorContext
+  - Sign In button navigates to 'home'
+  - Sign Up link navigates to 'signup'
+  - Remove the MealPlanPreview stub (that was placeholder content)
+
+Create hook: src/core/useNavigator.ts
+  - export function useNavigator() { return useContext(NavigatorContext) }
+
+
+===========================================
+PHASE 2 — MOCK DATA
+===========================================
+Purpose: hardcoded data that every screen reads from. No API calls. No AsyncStorage.
+
+File to create: src/data/mockMealPlan.ts
+
+  Export type Meal = {
+    id: string;
+    type: 'breakfast' | 'lunch' | 'dinner' | 'snack';
+    time: string;         // e.g. '8:00 am'
+    calories: number;
+    costUsd: number;
+    prepMinutes: number;
+    title: string;
+    description: string;
+    imageKey: string;     // one of 'breakfast' | 'lunch' | 'dinner' (maps to bundled asset)
+    ingredients: string[];
+    instructions: string[];
+    macros: { kcal: number; protein: number; carbs: number; fat: number };
+  }
+
+  Export type DayPlan = { day: string; meals: Meal[] }
+
+  Export const MOCK_MEAL_PLAN: DayPlan[7] with these days:
+    Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+
+  Use the EXACT meals shown in the Figma screenshots:
+    Monday:    Avocado Toast with Poached Egg / Mediterranean Quinoa Bowl / Herb-Crusted Salmon
+    Tuesday:   Veggie Omelet with Feta / Turkey Avocado Wrap / Turkey Meatballs w/ Whole-Wheat Pasta
+    Wednesday: Oatmeal with Banana & Cinnamon / Caprese Sandwich / Lemon Garlic Chicken w Roasted Veggies
+    Thursday:  Smoothie Bowl / Chicken Caesar Salad / Beef Stir-Fry
+    Friday:    Toast with Peanut Butter & Blueberries / Tuna Salad Wrap / Shrimp Tacos
+    Saturday:  Whole-Grain Pancakes with Fruit / Veggie Buddha Bowl / Chicken Parmesan
+    Sunday:    Breakfast Burrito / Mediterranean Salad / Grilled Steak with Mashed Potatoes & Green Beans
+
+  Total budget: $95.00   Prep time: 45 min/day   Calories: 2,000 cal/day
+
+  Include full ingredients + steps for each meal (use the recipe data visible in
+  the Figma recipe screens).
+
+File to create: src/data/allergies.ts
+  Export ALLERGY_ITEMS: Array<{ id: string; label: string; imageKey: string }>
+  Items: Dairy, Eggs, Fish, Shellfish, Tree Nuts, Peanuts, Wheat, Soy, Sesame
+
+File to create: src/data/cuisines.ts
+  Export CUISINE_ITEMS: Array<{ id: string; label: string; imageKey: string }>
+  Items: Italian, Mexican, Japanese, Chinese, Indian, Thai, Mediterranean,
+         American, French, Korean, Greek, Middle Eastern
+
+File to create: src/data/ingredients.ts
+  Export INGREDIENT_CATEGORIES with all subcategories matching the Figma lists.
+  Structure:
+    Record<TastesCategory, { label: string; items: string[] }>
+  Categories: beef, poultry, pork, lamb, seafood, exotic, veggies, fruit,
+              dairy, grains, beans, nuts, spices, oils, sauces
+
+  Populate each category's items array from the full lists visible in the Figma
+  long-scroll screens (Beef.png, Poultry.png, etc.).
+
+File to create: src/data/nutrition.ts
+  Export NUTRITION_PLANS: string[] =
+    ['Mediterranean','Flexitarian','DASH','Ketogenic (Keto)','Paleo',
+     'Vegan','Vegetarian','Carnivore','Whole30','Low-FODMAP']
+
+
+===========================================
+PHASE 3 — PREFERENCES STATE
+===========================================
+Purpose: track the user's food preference ratings in memory (no persistence needed
+for the prototype).
+
+File to create: src/state/PreferencesContext.tsx
+
+  type Rating = 'love' | 'like' | 'idk' | 'dislike' | null
+
+  type PreferencesState = {
+    ingredientRatings: Record<string, Rating>   // keyed by ingredient label
+    allergies: Record<string, boolean>           // keyed by allergy id
+    cuisineRatings: Record<string, Rating>       // keyed by cuisine id
+    nutritionPlan: string | null
+    cookingStyle: string | null
+    skillLevel: string | null
+    budgetUsd: number
+    peoplePerMeal: number
+    numberOfDays: number
+    meals: { breakfast: boolean; lunch: boolean; dinner: boolean; snack: boolean }
+  }
+
+  Export PreferencesProvider wrapping children in context.
+  Export usePreferences() hook.
+  Include setRating(key, rating), toggleAllergy(id), setNutritionPlan(plan),
+  setCookingStyle(s), setSkillLevel(s), setBudget(n), setPeoplePerMeal(n),
+  setNumberOfDays(n), toggleMeal(type) actions.
+
+  Add PreferencesProvider to src/core/Navigator.tsx wrapping everything.
+
+
+===========================================
+PHASE 4 — SHARED UI COMPONENTS
+===========================================
+Build these before building screens. Each is a standalone presentational component.
+
+--- src/shared/components/BottomNavBar.tsx (REPLACE existing) ---
+Three icons: home outline, sliders/settings outline, plate-with-fork outline.
+Active icon fills to deepGreen. Use Unicode or simple SVG paths drawn with View.
+Props: activeTab: 'home' | 'preferences' | 'meals'; onPress: (tab) => void
+Position: absolute bottom, full width, height 56, borderTop 1px #E3E3E3 bg white.
+Layout: three equal columns. Active icon color = colors.deepGreen.
+Inactive icon color = colors.mutedText.
+
+Figma tab labels: "Meals", "Recipe", "Shopping" (with icons: plate, document, bag).
+
+--- src/shared/components/RatingRow.tsx ---
+Props: label: string; value: Rating; onChange: (r: Rating) => void
+Layout: horizontal row, label left (flex 1, serif font 20px), then four buttons.
+Buttons (left to right): ❤️ (love), 👍 (like), IDK text (idk), 👎 (dislike).
+Active button shows a green rounded-rect background behind it (#A3BD9C opacity 0.9).
+Inactive: no background.
+Separator line below each row (1px #E3E3E3).
+Height: 56px per row.
+
+--- src/shared/components/FoodCategoryTab.tsx ---
+Props: categories: Array<{key: string; label: string; image: ImageSourcePropType}>
+       activeKey: string; onSelect: (key: string) => void
+Horizontal ScrollView. Each tab: image circle (64px diameter, white plate border
+3px when active) + label below (serif 13px uppercase, deepGreen when active,
+mutedText when inactive). Active tab has white circle border. Height: 120px.
+
+--- src/shared/components/AllergyCard.tsx ---
+Props: label: string; image: ImageSourcePropType; active: boolean; onToggle: () => void
+Square card roughly half screen width minus gap. Image fills card.
+Label in top-left over image (Cinzel/serif bold 22px white with text shadow).
+When active=true: show a large red "no" circle icon centered over image.
+  The no icon: red circle outline + diagonal line, roughly 60px, semi-transparent.
+When active=false: show small no icon bottom-left (24px).
+No icon can be drawn with two Views (circle + rotated line) — no image needed.
+Border radius 0 (square cards, full bleed).
+
+--- src/shared/components/CuisineCard.tsx ---
+Props: label: string; image: ImageSourcePropType; value: Rating; onChange: (r: Rating) => void
+Square card roughly half screen width minus gap.
+Image fills top ~80% of card. Label over top of image (serif italic bold).
+Bottom strip (frosted white, height ~60px) contains four rating buttons.
+Buttons: ❤️  👍  IDK  👎 evenly spaced. Active gets green bg highlight.
+
+--- src/shared/components/DayPillSelector.tsx ---
+Props: days: string[]; activeIndex: number; onSelect: (i: number) => void
+Horizontal scroll row of pill-shaped buttons.
+Pill: rounded-full, border 1px black, text serif 14px. Width ~50px height 34px.
+Active pill: bg deepGreen, text white, no border.
+Inactive: bg transparent, text black.
+
+--- src/shared/components/MealCard.tsx ---
+Props: meal: Meal; style?: ViewStyle
+Layout (matches Figma Meal Plan-meals screens):
+  Left: square thumbnail 64x64, rounded 8px (use a colored placeholder rect if no
+        real image — bg colors: breakfast=#C58A68, lunch=#A3BD9C, dinner=#7E2D24).
+  Right column:
+    Row 1: meal.type capitalized (serif 16px deepGreen bold) + bullet + time + cal + cost + clock + prepMin
+    Row 2: meal.title (serif 20px black)
+    Row 3: meal.description (serif 14px mutedText, 2 lines max)
+  Separator line below.
+
+--- src/shared/components/PlanHeaderBanner.tsx ---
+Props: (none — reads from PreferencesContext or use static mock values)
+Full-width green banner (deepGreen background).
+  Top text: "Your Personal Meal Plan" (white serif 22px)
+  Subtext: "Balanced | Budget Friendly | 2,000 cal/day" (white serif 14px)
+  Two dark-green tiles side by side:
+    Left: "Total Budget" label + "$95.00" large
+    Right: "Prep Time" label + "45 min/day" large
+Banner height ~180px.
+
+--- src/shared/components/ContentTabBar.tsx ---
+Props: activeTab: 'meals' | 'recipes' | 'shopping'; onSelect: (t) => void
+Three tabs: Meals (plate icon), Recipe (document icon), Shopping (bag icon).
+Active tab: icon+label darkens, underline 2px deepGreen below label.
+Inactive: mutedText color.
+Full width, height 52px, border-bottom 1px #E3E3E3.
+
+--- src/shared/components/DropdownPicker.tsx ---
+Props: label: string; options: string[]; value: string | null; onSelect: (v: string) => void
+Pill-shaped border button (rounded-full, border 1px black).
+Shows label + chevron-down. On press: renders options list below (absolute positioned).
+Options list: white bg, rounded-rect, each option is a plain text row.
+Used for Cooking Style and Skill Level on HomeScreen.
+
+--- src/shared/components/ToggleSwitch.tsx ---
+Props: value: boolean; onChange: (v: boolean) => void
+Simple on/off toggle. Track: rounded-full 50x28. Thumb: white circle 24x24.
+On: track bg = brandGreen. Off: track bg = #D3D3D3.
+
+--- src/shared/components/NumberInput.tsx ---
+Props: value: number; onChange: (n: number) => void; label: string
+Square outlined input box (border 1px black, rounded 8, width 80px).
+Shows numeric value, no stepper needed — just TextInput with keyboardType="numeric".
+Label above it (serif 13px).
+
+
+===========================================
+PHASE 5 — SCREENS
+===========================================
+Build in this order. Each screen lives in src/features/<feature>/screens/.
+
+--- src/features/auth/screens/SignUpScreen.tsx ---
+Figma ref: signup.png (already in prototype assets)
+  - SavrBitesLogo at top
+  - "Sign in" link top-right -> navigate('signIn')
+  - Three FigmaTextField: Enter Username, Enter Password, Confirm Password
+  - FigmaPrimaryButton "Sign up" -> navigate('home')
+  - BottomNavBar (inactive state)
+
+--- src/features/home/screens/HomeScreen.tsx ---
+Figma ref: Home.png
+Layout (use DesignCanvas, all positioned to match Figma):
+  SavrBitesLogo at top (same as sign-in screen).
+  Subtitle "Choose your Food Preferences" (serif 22px centered).
+  Four preference cards in a column:
+    Each card: Image (64x64 thumbnail left) + Title (brandGreen serif bold 20px)
+               + subtitle (black serif 14px) + FigmaPrimaryButton on right.
+    Tastes card    -> navigate('beefHome')
+    Allergies card -> navigate('allergiesHome')
+    Cuisines card  -> navigate('cuisinesHome')
+    Nutrition card -> navigate('nutritionHome')
+    Card images can be colored placeholder Views (same colors as MealCard thumbs).
+  Two DropdownPicker in a row: Cooking Style / Skill Level.
+    Cooking Style options: Chef Inspired, Quick Fix, Comfort Food, On the go, Just a Snack
+    Skill Level options: Chef, Home Expert, Intermediate, Follow Recipe, Beginner
+  Three NumberInput in a row: Total Budget / People per Meal / Number of Days.
+  Four ToggleSwitch items in 2x2 grid: Breakfast, Lunch, Snack, Dinner.
+  FigmaPrimaryButton full-width: "Create Meal Plan" -> navigate('mealsMonday').
+  BottomNavBar activeTab='home'.
+
+--- src/features/preferences/screens/AllergiesScreen.tsx ---
+Figma ref: Allergies home.png
+  - Title "Allergies" (serif 48px centered, border below).
+  - 2-column grid of AllergyCard components from ALLERGY_ITEMS.
+  - Toggle allergy on card tap (usePreferences().toggleAllergy).
+  - FigmaPrimaryButton "Save Preferences" -> navigate('home').
+  - BottomNavBar.
+
+--- src/features/preferences/screens/CuisinesScreen.tsx ---
+Figma ref: Cuisines home.png
+  - Title "Cuisines" (serif 48px centered, border below).
+  - 2-column grid of CuisineCard from CUISINE_ITEMS.
+  - RatingRow below grid? No — rating is inline on each card (see CuisineCard).
+  - "Other Dislikes" FigmaTextField + Submit button.
+  - "Other Likes" FigmaTextField + Submit button.
+  - FigmaPrimaryButton "Save Preferences" -> navigate('home').
+  - BottomNavBar.
+
+--- src/features/preferences/screens/NutritionScreen.tsx ---
+Figma ref: Nutrition home.png
+  - Title "Nutrition" (serif 48px centered, border below).
+  - ScrollView of radio button rows. Each row: circle (22px, deepGreen when active)
+    + label (serif 24px). Selecting one deselects others.
+    Data from NUTRITION_PLANS.
+  - "Other Dislikes" / "Other Likes" text inputs.
+  - FigmaPrimaryButton "Save Preferences" -> navigate('home').
+  - BottomNavBar.
+
+--- src/features/preferences/screens/TastesScreen.tsx ---
+Figma ref: Beef home.png, Poultry home.png, etc.
+Props: category: ScreenKey (passed from Navigator)
+  - FoodCategoryTab at top showing the relevant tab group.
+    Meat tabs: beef, poultry, pork, lamb (use meatCategoryNav mapping)
+    Pantry tabs: nuts, spices, oils, sauces
+    Others (dairy, seafood, grains, exotic, veggies, fruit, beans): show single tab
+    Selecting a tab calls navigate(tabKey+'Home').
+  - ScrollView of RatingRow for each item in INGREDIENT_CATEGORIES[category].items.
+    First row: "All [Category]" as a master toggle.
+    Remaining rows: individual items.
+  - "Other Dislikes" / "Other Likes" text inputs + Submit buttons.
+  - FigmaPrimaryButton "Save Preferences" -> navigate('home').
+  - BottomNavBar.
+
+--- src/features/mealplan/screens/MealPlanScreen.tsx ---
+Figma ref: Meal Plan-meals-*.png and Meal Plan-Recipes-*.png
+Props: day: number (0=Mon..6=Sun); tab: 'meals' | 'recipes' | 'shopping'
+  - PlanHeaderBanner at top.
+  - ContentTabBar: switching tab navigates to correct screen key.
+  - DayPillSelector: switching day navigates to meals/recipesXxx.
+  - If tab === 'meals':
+      ScrollView of MealCard for each meal in MOCK_MEAL_PLAN[day].meals.
+  - If tab === 'recipes':
+      ScrollView — for each meal in MOCK_MEAL_PLAN[day].meals render:
+        Title (serif 22px bold), Ingredients list (bulleted), Macros line,
+        Prep time line, Steps numbered list. Separator between meals.
+  - BottomNavBar activeTab='meals'.
+
+--- src/features/mealplan/screens/ShoppingListScreen.tsx ---
+Figma ref: Shopping list.png
+  - PlanHeaderBanner.
+  - ContentTabBar (shopping tab active).
+  - "Proteins" section header with meat emoji.
+  - FlatList of shopping items, each row: checkbox (square, 24px, border 1px) + label.
+    Items (from Figma): Chicken breasts 1½ lbs, Salmon fillets 18oz, Ground turkey 1lb,
+    Sirloin steak ½lb, Shrimp raw peeled ½lb, Eggs large 1 dozen, Tuna (in water) 1 can,
+    Deli turkey ¼lb.
+    Tapping checkbox toggles checked state (local state, no persistence needed).
+  - BottomNavBar activeTab='meals'.
+
+
+===========================================
+PHASE 6 — BOTTOM NAV WIRING
+===========================================
+After all screens exist, update BottomNavBar so each tab icon navigates correctly:
+  Home icon    -> navigate('home')
+  Sliders icon -> navigate('beefHome')  (entry to preferences)
+  Plate icon   -> navigate('mealsMonday')
+
+Call useNavigator() inside BottomNavBar to get navigate().
+Pass activeTab prop based on current screen (Navigator determines this).
+
+
+===========================================
+PHASE 7 — POLISH PASS
+===========================================
+Only do this if Phases 1-6 are complete and TypeScript has no errors.
+
+- Run: npx expo start --web  and walk through every screen
+- Fix any text overflow (add numberOfLines or adjust font sizes)
+- Fix any layout that doesn't match Figma screenshots
+- Ensure all screens scroll properly (no content hidden behind BottomNavBar)
+  Fix: add paddingBottom={80} to ScrollView contentContainerStyle on each screen.
+- Check tablet layout: DesignCanvas centers the 440px frame on tablet automatically.
+- Confirm TypeScript: npx tsc --noEmit
+
+
+===========================================
+CONSTRAINTS — READ BEFORE WRITING ANY CODE
+===========================================
+
+1.  NO new npm packages. Use only what is in package.json.
+2.  NO mono-files. Max 200 lines per file. Split if longer.
+3.  NO App.tsx changes. Entry point is index.ts -> App.tsx -> AppRoot -> Navigator.
+4.  NO comments that describe what the code does. Only comment WHY if non-obvious.
+5.  NO web-only APIs. Every component must work on iOS and Android.
+6.  ALL image placeholder assets: use a colored <View> with borderRadius, do NOT
+    use require() for images unless the file already exists in assets/prototype/.
+7.  ALL text must use fontFamily: 'serif'. This is the Figma brand font.
+8.  ALL positioning: prefer flexbox layout over absolute positioning for new screens.
+    Only use absolute positioning when matching a specific Figma pixel position.
+9.  FONT SIZES from typography.ts where applicable, otherwise match Figma visually.
+10. DO NOT modify src/features/prototype/ files. The image prototype stays intact
+    as a fallback. The Navigator falls back to it for any screen not yet coded.
+
+
+===========================================
+VERIFICATION CHECKLIST
+===========================================
+Before reporting a phase complete:
+[ ] npx tsc --noEmit passes with zero errors
+[ ] No import that references a file that doesn't exist
+[ ] No require() for an asset file that doesn't exist in assets/
+[ ] Screen renders without crashing (test in web browser via expo start --web)
+[ ] Text does not clip on a 390px wide screen (iPhone 14 width)
+
+
+===========================================
+FILE STRUCTURE WHEN DONE
+===========================================
+src/
+  core/
+    AppRoot.tsx          (modified: renders Navigator)
+    Navigator.tsx        (new: screen router)
+    useNavigator.ts      (new: hook)
+  data/
+    mockMealPlan.ts      (new)
+    allergies.ts         (new)
+    cuisines.ts          (new)
+    ingredients.ts       (new)
+    nutrition.ts         (new)
+  state/
+    PreferencesContext.tsx (new)
+  features/
+    auth/screens/
+      SignInScreen.tsx    (modified: uses Navigator)
+      SignUpScreen.tsx    (new)
+    home/screens/
+      HomeScreen.tsx      (new)
+    preferences/screens/
+      AllergiesScreen.tsx (new)
+      CuisinesScreen.tsx  (new)
+      NutritionScreen.tsx (new)
+      TastesScreen.tsx    (new)
+    mealplan/screens/
+      MealPlanScreen.tsx  (new)
+      ShoppingListScreen.tsx (new)
+    prototype/            (UNTOUCHED)
+  shared/components/
+    BottomNavBar.tsx      (replaced)
+    ContentTabBar.tsx     (new)
+    DesignCanvas.tsx      (untouched)
+    FigmaPrimaryButton.tsx (untouched)
+    FigmaTextField.tsx    (untouched)
+    FoodCategoryTab.tsx   (new)
+    AllergyCard.tsx       (new)
+    CuisineCard.tsx       (new)
+    DayPillSelector.tsx   (new)
+    DropdownPicker.tsx    (new)
+    MealCard.tsx          (new)
+    NumberInput.tsx       (new)
+    PlanHeaderBanner.tsx  (new)
+    RatingRow.tsx         (new)
+    SavrBitesLogo.tsx     (untouched)
+    ToggleSwitch.tsx      (new)
+  theme/
+    colors.ts    (untouched)
+    layout.ts    (untouched)
+    typography.ts (untouched)
+    index.ts     (untouched)
