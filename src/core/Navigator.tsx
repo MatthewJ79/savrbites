@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { Platform, View, StyleSheet } from 'react-native';
 
 import { AllergiesScreen } from '../features/preferences/screens/AllergiesScreen';
 import { CuisinesScreen } from '../features/preferences/screens/CuisinesScreen';
@@ -20,6 +20,27 @@ const DAY_MEAL_KEYS: ScreenKey[] = ['mealsMonday', 'mealsTuesday', 'mealsWednesd
 const DAY_RECIPE_KEYS: ScreenKey[] = ['recipesMonday', 'recipesTuesday', 'recipesWednesday', 'recipesThursday', 'recipesFriday', 'recipesSaturday', 'recipesSunday'];
 
 const TASTE_SCREENS: ScreenKey[] = ['beefHome', 'poultryHome', 'porkHome', 'lambHome', 'seafoodHome', 'exoticHome', 'veggiesHome', 'fruitHome', 'dairyHome', 'grainsHome', 'beansHome', 'nutsHome', 'spicesHome', 'oilsHome', 'saucesHome'];
+const SCREEN_KEYS: ScreenKey[] = [
+  'signIn',
+  'signup',
+  'home',
+  'allergiesHome',
+  'cuisinesHome',
+  'nutritionHome',
+  'shoppingList',
+  ...DAY_MEAL_KEYS,
+  ...DAY_RECIPE_KEYS,
+  ...TASTE_SCREENS,
+];
+
+function getInitialScreen(): ScreenKey {
+  if (Platform.OS !== 'web' || typeof window === 'undefined') return 'signIn';
+
+  const requested = new URLSearchParams(window.location.search).get('screen');
+  return requested && SCREEN_KEYS.includes(requested as ScreenKey)
+    ? (requested as ScreenKey)
+    : 'signIn';
+}
 
 function renderScreen(screen: ScreenKey): React.ReactElement {
   if (screen === 'signIn') return <SignInScreen />;
@@ -44,7 +65,7 @@ function renderScreen(screen: ScreenKey): React.ReactElement {
 }
 
 export function Navigator() {
-  const [screen, setScreen] = useState<ScreenKey>('signIn');
+  const [screen, setScreen] = useState<ScreenKey>(getInitialScreen);
 
   return (
     <NavigatorContext.Provider value={{ screen, navigate: setScreen }}>

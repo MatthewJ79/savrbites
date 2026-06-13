@@ -46,7 +46,7 @@ export function HomeScreen() {
     <ScreenFrame>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.logoWrap}>
-          <SavrBitesLogo />
+          <SavrBitesLogo absolute={false} style={styles.logo} />
         </View>
 
         <Text style={styles.subtitle}>Choose your Food Preferences</Text>
@@ -115,9 +115,12 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   content: { paddingBottom: 20 },
   logoWrap: {
-    height: 200,
-    position: 'relative',
+    height: 205,
     alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  logo: {
+    marginTop: 36,
   },
   subtitle: {
     fontFamily: typography.brandFamily,
