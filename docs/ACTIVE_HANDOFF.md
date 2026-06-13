@@ -18,6 +18,7 @@ Latest Codex Checkpoints
 - `b8a5e55` Use Figma images on home preference cards
 - `c5cbe3b` Use Figma meal thumbnails in meal cards
 - `ddfddec` Use Figma images on allergy and cuisine cards
+- `3c26cbd` Polish ingredient preference rows
 
 Verified Gates
 --------------
@@ -35,6 +36,6 @@ Next Best Tasks
 ---------------
 1. Visual QA every native screen in Chrome at 390px wide and tablet width.
 2. Improve the long ingredient lists for exact Figma spacing and type scale after visual QA.
-3. Add backend meal-plan API contract docs before wiring real AI generation.
-4. Replace any remaining color-only placeholders when approved source art exists.
-5. Re-test Expo Go/iPhone after the visual pass.
+3. Replace any remaining color-only placeholders when approved source art exists.
+4. Re-test Expo Go/iPhone after the visual pass.
+5. Use `docs/MEAL_PLAN_API_CONTRACT.md` before wiring real AI generation.
