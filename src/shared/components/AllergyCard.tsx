@@ -1,16 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import type { ImageSourcePropType } from 'react-native';
 
 type Props = {
   label: string;
   color: string;
+  image?: ImageSourcePropType;
   active: boolean;
   onToggle: () => void;
   size: number;
 };
 
-export function AllergyCard({ label, color, active, onToggle, size }: Props) {
+export function AllergyCard({ label, color, image, active, onToggle, size }: Props) {
   return (
     <TouchableOpacity activeOpacity={0.85} onPress={onToggle} style={[styles.card, { width: size, height: size, backgroundColor: color }]}>
+      {image && <Image resizeMode="cover" source={image} style={styles.image} />}
       <Text style={styles.label}>{label}</Text>
 
       {active ? (
@@ -50,6 +53,11 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(255,255,255,0.6)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
+  },
+  image: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
   },
   bigNoWrap: {
     alignItems: 'center',

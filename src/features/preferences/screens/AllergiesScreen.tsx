@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { useWindowDimensions } from 'react-native';
 
 import { useNavigator } from '../../../core/useNavigator';
+import { ALLERGY_IMAGES } from '../../../data/allergyImages';
 import { ALLERGY_ITEMS } from '../../../data/allergies';
 import { AllergyCard } from '../../../shared/components/AllergyCard';
 import { BottomNavBar } from '../../../shared/components/BottomNavBar';
@@ -33,6 +34,7 @@ export function AllergiesScreen() {
               key={item.id}
               label={item.label}
               color={item.color}
+              image={ALLERGY_IMAGES[item.id]}
               active={!!prefs.allergies[item.id]}
               onToggle={() => toggleAllergy(item.id)}
               size={cardSize}

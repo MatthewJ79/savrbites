@@ -1,4 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import type { ImageSourcePropType } from 'react-native';
 
 import type { Rating } from '../../data/types';
 import { colors } from '../../theme';
@@ -6,6 +7,7 @@ import { colors } from '../../theme';
 type Props = {
   label: string;
   color: string;
+  image?: ImageSourcePropType;
   value: Rating;
   onChange: (r: Rating) => void;
   size: number;
@@ -20,7 +22,7 @@ const BUTTONS: BtnDef[] = [
   { key: 'dislike', symbol: '👎' },
 ];
 
-export function CuisineCard({ label, color, value, onChange, size }: Props) {
+export function CuisineCard({ label, color, image, value, onChange, size }: Props) {
   const handlePress = (key: Exclude<Rating, null>) => {
     onChange(value === key ? null : key);
   };
@@ -28,6 +30,7 @@ export function CuisineCard({ label, color, value, onChange, size }: Props) {
   return (
     <View style={[styles.card, { width: size, height: size + 50 }]}>
       <View style={[styles.imageArea, { height: size - 10, backgroundColor: color }]}>
+        {image && <Image resizeMode="cover" source={image} style={styles.image} />}
         <Text style={styles.cuisineLabel}>{label}</Text>
       </View>
       <View style={styles.ratingBar}>
@@ -67,6 +70,11 @@ const styles = StyleSheet.create({
   imageArea: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  image: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
   },
   cuisineLabel: {
     fontFamily: 'serif',

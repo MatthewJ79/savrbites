@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { useWindowDimensions } from 'react-native';
 
 import { useNavigator } from '../../../core/useNavigator';
+import { CUISINE_IMAGES } from '../../../data/cuisineImages';
 import { CUISINE_ITEMS } from '../../../data/cuisines';
 import { BottomNavBar } from '../../../shared/components/BottomNavBar';
 import { CuisineCard } from '../../../shared/components/CuisineCard';
@@ -33,6 +34,7 @@ export function CuisinesScreen() {
               key={item.id}
               label={item.label}
               color={item.color}
+              image={CUISINE_IMAGES[item.id]}
               value={prefs.cuisineRatings[item.id] ?? null}
               onChange={(r) => setCuisineRating(item.id, r)}
               size={cardSize}
