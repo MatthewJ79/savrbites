@@ -41,7 +41,10 @@ export function ShoppingListScreen() {
           const sectionItems = items.filter((i) => i.section === section);
           return (
             <View style={styles.section}>
-              <Text style={styles.sectionHeader}>🛒  {section}</Text>
+              <View style={styles.sectionHeader}>
+                <SectionIcon section={section} />
+                <Text style={styles.sectionTitle}>{section}</Text>
+              </View>
               {sectionItems.map((item) => (
                 <TouchableOpacity
                   key={item.id}
@@ -50,7 +53,7 @@ export function ShoppingListScreen() {
                   style={styles.row}
                 >
                   <View style={[styles.checkbox, checked[item.id] && styles.checkboxChecked]}>
-                    {checked[item.id] && <Text style={styles.checkmark}>✓</Text>}
+                    {checked[item.id] && <View style={styles.checkmark} />}
                   </View>
                   <Text style={[styles.itemLabel, checked[item.id] && styles.itemLabelDone]}>
                     {item.label}
@@ -68,16 +71,53 @@ export function ShoppingListScreen() {
   );
 }
 
+function SectionIcon({ section }: { section: string }) {
+  const fill = section === 'Proteins' ? '#7E2D24' : section === 'Produce' ? colors.brandGreen : colors.deepGreen;
+
+  return (
+    <View style={styles.sectionIcon}>
+      <View style={[styles.sectionIconBody, { backgroundColor: fill }]} />
+      <View style={[styles.sectionIconAccent, { backgroundColor: fill }]} />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   content: { paddingBottom: 20 },
   section: { paddingTop: 8 },
   sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  sectionTitle: {
     fontFamily: 'serif',
     fontSize: 18,
     color: colors.deepGreen,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
     fontWeight: '700',
+  },
+  sectionIcon: {
+    width: 24,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sectionIconBody: {
+    width: 18,
+    height: 12,
+    borderRadius: 7,
+    transform: [{ rotate: '-12deg' }],
+  },
+  sectionIconAccent: {
+    position: 'absolute',
+    top: 1,
+    right: 1,
+    width: 8,
+    height: 3,
+    borderRadius: 2,
+    transform: [{ rotate: '35deg' }],
   },
   row: {
     flexDirection: 'row',
@@ -103,9 +143,13 @@ const styles = StyleSheet.create({
     borderColor: colors.deepGreen,
   },
   checkmark: {
-    fontSize: 14,
-    color: colors.deepGreen,
-    fontWeight: '700',
+    width: 11,
+    height: 6,
+    borderLeftWidth: 2,
+    borderBottomWidth: 2,
+    borderColor: colors.deepGreen,
+    transform: [{ rotate: '-45deg' }],
+    marginBottom: 2,
   },
   itemLabel: {
     fontFamily: 'serif',
