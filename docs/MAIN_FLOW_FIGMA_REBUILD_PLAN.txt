@@ -1,0 +1,148 @@
+SAVRBITES MAIN FLOW FIGMA REBUILD PLAN
+======================================
+
+Purpose
+-------
+Rebuild the app preview around the 7 approved main flow screens only. The user
+provided many extra ingredient and recipe screens for reference, but those are
+not the product target for this pass. The main goal is to make the flow and look
+match the approved Figma screens exactly before expanding logic or extra pages.
+
+Approved Main Flow Screens
+--------------------------
+Use these screens as the design source of truth:
+
+1. `sign in.png`
+2. `Home.png`
+3. `Beef home.png`
+4. `Allergies home.png`
+5. `Cuisines home.png`
+6. `Nutrition home.png`
+7. `Meal Plan-meals-Monday.png`
+
+All other screens are reference only until the main flow is approved.
+
+Main Flow
+---------
+1. Sign In
+   - Starts the app.
+   - Sign In button goes to Home.
+   - Sign Up / Forgot Password can remain visual-only for this pass unless the
+     user asks for those flows.
+
+2. Home
+   - Select Tastes goes to Beef home.
+   - Set Allergies goes to Allergies home.
+   - Select Cuisines goes to Cuisines home.
+   - Set Nutrition goes to Nutrition home.
+   - Create Meal Plan goes to Meal Plan-meals-Monday.
+
+3. Beef Home / Tastes
+   - Top meat category row should visually match Figma.
+   - Icons must be selectable and mark preference.
+   - Tapping preference icons must NOT navigate to long ingredient list screens.
+   - Save Preferences goes back to Home.
+
+4. Allergies Home
+   - Allergy cards should match the supplied Figma screen exactly.
+   - Cards can be selectable and show a simple selected marker.
+   - Save Preferences goes back to Home.
+
+5. Cuisines Home
+   - Cuisine card layout should match the supplied Figma screen exactly.
+   - Cuisine preference icons should be selectable.
+   - Save Preferences goes back to Home.
+
+6. Nutrition Home
+   - Diet radio list should match the supplied Figma screen exactly.
+   - Radio options should be selectable.
+   - Save Preferences goes back to Home.
+
+7. Meal Plan Monday
+   - Create Meal Plan from Home lands here.
+   - Meal/Recipe/Shopping tabs can remain visual-only except the bottom Home tab
+     should return to Home.
+   - Day tabs can remain visual-only until more meal plan screens are approved.
+
+Design Rules
+------------
+- Main flow screens must match the approved Figma images first.
+- Do not redesign, restyle, resize, recolor, or "improve" the approved screens.
+- Use the approved images as pixel reference during this pass.
+- Mobile and tablet preview only. No desktop layout work.
+- Do not introduce extra product pages from the old long reference set.
+- Extra reference screens may stay in the repository, but must not drive the main
+  app flow.
+- If a native component cannot match Figma quickly, use the approved Figma image
+  as the visual layer and add transparent/selectable hotspots on top.
+
+Implementation Strategy
+-----------------------
+Phase 1: Lock the 7-screen design prototype
+- Create a main-flow screen registry containing only the 7 approved screens.
+- Route the app root to the main-flow prototype while design approval is pending.
+- Remove navigation from Beef preference rows to long-list screens.
+- Add lightweight selectable overlays for preference/radio/card states.
+- Keep the overlay subtle so it marks selection without changing the Figma look.
+
+Phase 2: Verify flow
+- Start at Sign In.
+- Sign In -> Home.
+- Home -> Beef -> Save -> Home.
+- Home -> Allergies -> Save -> Home.
+- Home -> Cuisines -> Save -> Home.
+- Home -> Nutrition -> Save -> Home.
+- Home -> Meal Plan Monday.
+- Bottom Home nav returns to Home.
+- Bottom Tastes nav goes to Beef Home.
+- Bottom Meals nav goes to Meal Plan Monday.
+
+Phase 3: Visual audit
+- Capture Chrome previews at phone width and tablet width.
+- Compare each of the 7 screens against the approved image.
+- Fix only visible differences in frame sizing, cropping, flow, or overlays.
+- Do not move on to backend AI or extra screens until this passes.
+
+Phase 4: Native rebuild after approval
+- Once the image-backed flow is approved, rebuild each screen as scalable native
+  React Native components one at a time.
+- After each native rebuild, compare against the approved Figma image.
+- Keep the image-backed screen as fallback until the native version is approved.
+
+Codex Tasks
+-----------
+1. Finish the main-flow prototype registry.
+2. Wire AppRoot to the main-flow design prototype.
+3. Implement selectable overlays for Beef, Allergies, Cuisines, and Nutrition.
+4. Remove or disable all non-main-flow navigation from prototype hotspots.
+5. Run `npx.cmd tsc --noEmit`.
+6. Run `npx.cmd expo export --platform web`.
+7. Capture and inspect the 7 approved screens.
+8. Commit safe checkpoints only after verification.
+
+Claude Tasks
+------------
+1. Review this plan before changing app flow.
+2. Do not add extra screens unless the user approves them.
+3. Help compare current preview screenshots against the approved Figma images.
+4. Log visual issues in `docs/ACTIVE_HANDOFF.md`.
+5. Work on small scoped fixes that do not conflict with Codex's active files.
+
+Acceptance Criteria
+-------------------
+- The preview opens to the approved Sign In design.
+- The user can follow the full main flow without reaching unapproved long-list
+  screens.
+- All 7 approved screens are visible without clipping.
+- Main flow images look like the supplied Figma screens.
+- Preference icons/cards/radio options are selectable and visibly marked.
+- TypeScript and web export pass.
+- Active handoff documents exactly what remains before native rebuild.
+
+Do Not Do Yet
+-------------
+- Do not wire real AI generation.
+- Do not spend time on long ingredient list screens.
+- Do not add unapproved recipe/day/shopping flows.
+- Do not replace the approved Figma visual direction with a new native design.
+- Do not expose provider keys in the app client.
